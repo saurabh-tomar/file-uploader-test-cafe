@@ -1,26 +1,73 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {DragEvent, useRef, useState} from 'react';
 import './App.css';
 
-function App() {
+const FileUploader = () => {
+
+  const [, setIsDragActive] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileUpload = () => {
+    inputRef.current?.click();
+  };
+
+  const handleDragEnter = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    setIsDragActive(true);
+  };
+
+  const handleDragLeave = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    setIsDragActive(false);
+  };
+
+  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const { files: droppedFileList } = event.dataTransfer;
+
+    console.log(droppedFileList);
+
+    setIsDragActive(false);
+  };
+
+  const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileList = event.target.files && event.target.files;
+    if (fileList) {
+      console.log(fileList);
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      <div>
+        <div
+            className="DropZone"
+            onClick={handleFileUpload}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+          Drop files here
+        </div>
+        <input
+            ref={inputRef}
+            style={{display: 'none'}}
+            type="file"
+            multiple={true}
+            onChange={onFileInputChange}
+        />
+      </div>
+  )
 }
 
-export default App;
+export default FileUploader;
