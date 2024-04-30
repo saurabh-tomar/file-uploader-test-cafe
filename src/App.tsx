@@ -3,7 +3,7 @@ import './App.css';
 
 const FileUploader = () => {
 
-  const [, setIsDragActive] = useState(false);
+  const [isDragActive, setIsDragActive] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileUpload = () => {
@@ -57,7 +57,7 @@ const FileUploader = () => {
             onDragOver={handleDragOver}
             onDrop={handleDrop}
         >
-          Drop files here
+          {isDragActive ? 'Drop them here' : 'Drop files here'}
         </div>
         <input
             ref={inputRef}
