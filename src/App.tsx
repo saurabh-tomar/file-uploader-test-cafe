@@ -1,9 +1,13 @@
-import React, {DragEvent, useRef, useState} from 'react';
+import React, {DragEvent, useEffect, useRef, useState} from 'react';
 import './App.css';
+import PopupModal from "./Popup";
 
 const FileUploader = () => {
 
   const [isDragActive, setIsDragActive] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [fileList, setFileList] = useState<FileList | null>(null);
+
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileUpload = () => {
@@ -35,7 +39,7 @@ const FileUploader = () => {
 
     const { files: droppedFileList } = event.dataTransfer;
 
-    console.log(droppedFileList);
+    setFileList(droppedFileList);
 
     setIsDragActive(false);
   };
@@ -43,9 +47,18 @@ const FileUploader = () => {
   const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files && event.target.files;
     if (fileList) {
-      console.log(fileList);
+      setFileList(fileList)
     }
   };
+
+  const closeModal = () => {
+    setIsOpen(false);
+    setFileList(null);
+  }
+
+  useEffect(() => {
+    if (fileList && fileList.length > 0) setIsOpen(true);
+  }, [fileList]);
 
   return (
       <div>
@@ -66,6 +79,7 @@ const FileUploader = () => {
             multiple={true}
             onChange={onFileInputChange}
         />
+        <PopupModal showModal={modalIsOpen}  closeModal={closeModal} fileList={fileList} />
       </div>
   )
 }
